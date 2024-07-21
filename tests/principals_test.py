@@ -12,6 +12,7 @@ def test_get_assignments(client, h_principal):
     data = response.json['data']
     for assignment in data:
         assert assignment['state'] in [AssignmentStateEnum.SUBMITTED, AssignmentStateEnum.GRADED]
+        assert assignment['student_id'] is not None
 
 
 def test_grade_assignment_draft_assignment(client, h_principal):
@@ -28,6 +29,9 @@ def test_grade_assignment_draft_assignment(client, h_principal):
     )
 
     assert response.status_code == 400
+    error_response = response.json
+    assert error_response['error'] == 'FyleError'
+    assert error_response["message"] == 'Assignment is in Draft state, it cannot be graded by principal'
 
 
 def test_grade_assignment(client, h_principal):
@@ -60,3 +64,20 @@ def test_regrade_assignment(client, h_principal):
 
     assert response.json['data']['state'] == AssignmentStateEnum.GRADED.value
     assert response.json['data']['grade'] == GradeEnum.B
+
+
+def test_no_assignment(client, h_principal):
+    response = client.post(
+        '/principal/assignments/grade',
+        headers=h_principal
+    )
+    
+    assert response.status_code == 400
+    
+def test_all_teachers(client, h_principal):
+    response = client.get(
+        '/principal/teachers',
+        headers=h_principal
+    )
+
+    assert response.status_code == 200
