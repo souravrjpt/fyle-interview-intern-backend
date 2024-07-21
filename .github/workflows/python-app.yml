@@ -36,4 +36,4 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest -vvv -s tests/
+        export FLASK_APP=core/server.py && rm core/store.sqlite3 && flask db upgrade -d core/migrations/ && pytest -vvv -s tests/
