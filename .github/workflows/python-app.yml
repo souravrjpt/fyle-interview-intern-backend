@@ -37,6 +37,6 @@ jobs:
     - name: Test with pytest
       run: |
         export FLASK_APP=core/server.py 
-        && if [ -f core/store.sqlite3 ]; then rm core/store.sqlite3; fi
-        && flask db upgrade -d core/migrations/ 
-        && pytest -vvv -s tests/
+        if [ -f core/store.sqlite3 ]; then rm core/store.sqlite3; fi
+        flask db upgrade -d core/migrations/ 
+        pytest -vvv -s tests/
