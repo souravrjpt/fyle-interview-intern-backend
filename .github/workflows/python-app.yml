@@ -40,3 +40,4 @@ jobs:
         if [ -f core/store.sqlite3 ]; then rm core/store.sqlite3; fi
         flask db upgrade -d core/migrations/ 
         pytest -vvv -s tests/
+        pytest --cov
